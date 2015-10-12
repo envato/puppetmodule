@@ -43,7 +43,7 @@ describe 'puppet::master', :type => :class do
             )
             should contain_package(params[:puppet_master_package]).with(
                 :ensure => params[:version],
-                :require => 'Package[puppetmaster-common]'
+                :require => ['Package[puppetmaster-common]','Package[puppet-common]','Package[puppet]']
             )
             should contain_package('puppetmaster-common').with(
                 :ensure => params[:version]
