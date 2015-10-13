@@ -100,6 +100,7 @@ class puppet::master (
   $passenger_high_performance    = on,
   $passenger_max_requests        = 10000,
   $passenger_stat_throttle_rate  = 30,
+  $passenger_root                = undef,
   $serialization_format          = undef,
   $serialization_package         = undef,
 ) inherits puppet::params {
@@ -128,8 +129,12 @@ class puppet::master (
     }
     package { $puppet_master_package:
       ensure  => $version,
-      require => Package[puppetmaster-common],
+      require => [Package['puppetmaster-common'], Package['puppet-common'], Package['puppet']],
     }
+    $dep_package_list = { 'puppet'        => { ensure => $version },
+                          'puppet-common' => { ensure => $version }
+                        }
+    ensure_resource(package, $dep_package_list)
   }
   else
   {
@@ -157,7 +162,7 @@ class puppet::master (
     passenger_high_performance    => $passenger_high_performance,
     passenger_max_requests        => $passenger_max_requests,
     passenger_stat_throttle_rate  => $passenger_stat_throttle_rate,
-
+    passenger_root                => $passenger_root,
   } ->
   Anchor['puppet::master::end']
 
