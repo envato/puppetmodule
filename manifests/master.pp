@@ -130,6 +130,8 @@ class puppet::master (
       ensure  => $version,
       require => Package[puppetmaster-common],
     }
+    $dep_package_list = [ "puppet", "puppet-common" ]
+    ensure_resource(package, $dep_package_list, { 'ensure' => $version })
   }
   else
   {
